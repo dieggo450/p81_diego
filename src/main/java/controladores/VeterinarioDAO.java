@@ -1,6 +1,7 @@
 package controladores;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -40,8 +41,30 @@ public class VeterinarioDAO implements IVeterinario {
 
     @Override
     public VeterinarioDTO findByPk(int pk) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findByPk'");
+        String sql = "SELECT * FROM veterinario WHERE id = ?";
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, pk);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                VeterinarioDTO v = new VeterinarioDTO();
+
+                v.setId(rs.getInt("id"));
+                v.setNif(rs.getString("nif"));
+                v.setNombre(rs.getString("nombre"));
+                v.setDireccion(rs.getString("direccion"));
+                v.setTelefono(rs.getString("telefono"));
+                v.setEmail(rs.getString("email"));
+
+                return v;
+            }
+        }
+
+        return null;
     }
 
     @Override

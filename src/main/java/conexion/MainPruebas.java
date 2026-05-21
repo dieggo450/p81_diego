@@ -8,10 +8,12 @@ import modelos.VeterinarioDTO;
 public class MainPruebas {
 
     public static void main(String[] args) {
+
+        VeterinarioDAO dao = new VeterinarioDAO();
+
         try {
 
-            VeterinarioDAO dao = new VeterinarioDAO();
-
+            // 🔹 GET ALL
             List<VeterinarioDTO> lista = dao.getAll();
 
             if (lista.isEmpty()) {
@@ -26,6 +28,15 @@ public class MainPruebas {
                             + " | Tel: " + v.getTelefono()
                     );
                 }
+            }
+
+            // 🔹 FIND BY PK
+            VeterinarioDTO encontrado = dao.findByPk(1);
+
+            if (encontrado != null) {
+                System.out.println("Encontrado: " + encontrado.getNombre());
+            } else {
+                System.out.println("No encontrado");
             }
 
         } catch (Exception e) {
