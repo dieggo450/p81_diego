@@ -11,7 +11,7 @@ public interface IMascota {
     MascotaDTO findByPk(int pk) throws  SQLException;
 
     //insertar un registro
-    int insertVeterinario (MascotaDTO mascota) throws SQLException;
+    int insertMascota (MascotaDTO mascota) throws SQLException;
 
     //Borrar un registro
     int deleteMascota (MascotaDTO p) throws SQLException;
@@ -23,5 +23,5 @@ public interface IMascota {
 
     //Obtener todas las mascotas tratadas por un veterinario
     //Basándose en su id.
-    List<MascotaDTO> getByVeterinarioId(int idVeterinario) throws SQLException;
+    List<MascotaDTO> getByMascotaId(int idVeterinario) throws SQLException;
 }
