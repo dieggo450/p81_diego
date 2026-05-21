@@ -14,6 +14,12 @@ import modelos.VeterinarioDTO;
 
 public class VeterinarioDAO implements IVeterinario {
 
+    private Connection con = null;
+
+    public VeterinarioDAO() {
+        con = Conexion.getInstance();
+    }
+
     @Override
     public List<VeterinarioDTO> getAll() throws SQLException {
         List<VeterinarioDTO> lista = new ArrayList<>();
@@ -69,8 +75,19 @@ public class VeterinarioDAO implements IVeterinario {
 
     @Override
     public int insertVeterinario(VeterinarioDTO veterinario) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'insertVeterinario'");
+        String sql = "INSERT INTO veterinario VALUES (?,?,?,?,?,?)";
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, veterinario.getId());
+            ps.setString(2, veterinario.getNif());
+            ps.setString(3, veterinario.getNombre());
+            ps.setString(4, veterinario.getDireccion());
+            ps.setString(5, veterinario.getTelefono());
+            ps.setString(6, veterinario.getEmail());
+
+            return ps.executeUpdate();
+        }
     }
 
     @Override
@@ -83,12 +100,6 @@ public class VeterinarioDAO implements IVeterinario {
     public int updateVeterinario(int pk, VeterinarioDTO nuevosDatos) throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateVeterinario'");
-    }
-
-    private Connection con = null;
-
-    public VeterinarioDAO() {
-        con = Conexion.getInstance();
     }
 
 }
