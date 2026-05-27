@@ -11,13 +11,13 @@ public class MascotaDTO {
     private LocalDate fechaNacimiento;
     private String tipo;            // perro, gato, otros
 
-    private int veterinarioId;      // FK -> Veterinario
+    private Integer veterinarioId;      // FK -> Veterinario
 
     public MascotaDTO() {
     }
 
     public MascotaDTO(int id, String chip, String nombre, double peso,
-            LocalDate fechaNacimiento, String tipo, int veterinarioId) {
+            LocalDate fechaNacimiento, String tipo, Integer veterinarioId) {
         this.id = id;
         this.chip = chip;
         this.nombre = nombre;
@@ -75,11 +75,11 @@ public class MascotaDTO {
         this.tipo = tipo;
     }
 
-    public int getVeterinarioId() {
+    public Integer getVeterinarioId() {
         return veterinarioId;
     }
 
-    public void setVeterinarioId(int veterinarioId) {
+    public void setVeterinarioId(Integer veterinarioId) {
         this.veterinarioId = veterinarioId;
     }
 

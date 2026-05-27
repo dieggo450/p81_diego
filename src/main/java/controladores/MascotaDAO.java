@@ -39,7 +39,8 @@ public class MascotaDAO implements IMascota {
                 m.setPeso(rs.getDouble("peso"));
                 m.setFechaNacimiento(rs.getDate("fecha_nacimiento").toLocalDate());
                 m.setTipo(rs.getString("tipo"));
-                m.setVeterinarioId(rs.getInt("veterinario_id"));
+                int vetId = rs.getInt("veterinario_id");
+                m.setVeterinarioId(rs.wasNull() ? null : vetId);
 
                 lista.add(m);
             }
@@ -69,7 +70,8 @@ public class MascotaDAO implements IMascota {
                 m.setPeso(rs.getDouble("peso"));
                 m.setFechaNacimiento(rs.getDate("fecha_nacimiento").toLocalDate());
                 m.setTipo(rs.getString("tipo"));
-                m.setVeterinarioId(rs.getInt("veterinario_id"));
+                int vetId = rs.getInt("veterinario_id");
+                m.setVeterinarioId(rs.wasNull() ? null : vetId);
 
                 return m;
             }
@@ -80,19 +82,30 @@ public class MascotaDAO implements IMascota {
 
     @Override
     public int insertMascota(MascotaDTO mascota) throws SQLException {
-        String sql = "INSERT INTO mascota VALUES (?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO mascota (numero_chip,nombre,peso,fecha_nacimiento,tipo,veterinario_id) VALUES (?,?,?,?,?,?)";
 
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            ps.setInt(1, mascota.getId());
-            ps.setString(2, mascota.getChip());
-            ps.setString(3, mascota.getNombre());
-            ps.setDouble(4, mascota.getPeso());
-            ps.setDate(5, Date.valueOf(mascota.getFechaNacimiento()));
-            ps.setString(6, mascota.getTipo());
-            ps.setInt(7, mascota.getVeterinarioId());
+            ps.setString(1, mascota.getChip());
+            ps.setString(2, mascota.getNombre());
+            ps.setDouble(3, mascota.getPeso());
+            ps.setDate(4, Date.valueOf(mascota.getFechaNacimiento()));
+            ps.setString(5, mascota.getTipo());
+            if (mascota.getVeterinarioId() == null) {
+                ps.setNull(6, java.sql.Types.INTEGER);
+            } else {
+                ps.setInt(6, mascota.getVeterinarioId());
+            }
 
-            return ps.executeUpdate();
+            int affected = ps.executeUpdate();
+            try (ResultSet keys = ps.getGeneratedKeys()) {
+                if (keys.next()) {
+                    int genId = keys.getInt(1);
+                    mascota.setId(genId);
+                    return genId;
+                }
+            }
+            return affected;
         }
     }
 
@@ -119,7 +132,11 @@ public class MascotaDAO implements IMascota {
             ps.setDouble(3, nuevosDatos.getPeso());
             ps.setDate(4, Date.valueOf(nuevosDatos.getFechaNacimiento()));
             ps.setString(5, nuevosDatos.getTipo());
-            ps.setInt(6, nuevosDatos.getVeterinarioId());
+            if (nuevosDatos.getVeterinarioId() == null) {
+                ps.setNull(6, java.sql.Types.INTEGER);
+            } else {
+                ps.setInt(6, nuevosDatos.getVeterinarioId());
+            }
             ps.setInt(7, pk);
 
             return ps.executeUpdate();
@@ -148,7 +165,8 @@ public class MascotaDAO implements IMascota {
                 m.setPeso(rs.getDouble("peso"));
                 m.setFechaNacimiento(rs.getDate("fecha_nacimiento").toLocalDate());
                 m.setTipo(rs.getString("tipo"));
-                m.setVeterinarioId(rs.getInt("veterinario_id"));
+                int vetId = rs.getInt("veterinario_id");
+                m.setVeterinarioId(rs.wasNull() ? null : vetId);
 
                 lista.add(m);
             }

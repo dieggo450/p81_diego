@@ -75,18 +75,25 @@ public class VeterinarioDAO implements IVeterinario {
 
     @Override
     public int insertVeterinario(VeterinarioDTO veterinario) throws SQLException {
-        String sql = "INSERT INTO veterinario VALUES (?,?,?,?,?,?)";
+        String sql = "INSERT INTO veterinario (nif,nombre,direccion,telefono,email) VALUES (?,?,?,?,?)";
 
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            ps.setInt(1, veterinario.getId());
-            ps.setString(2, veterinario.getNif());
-            ps.setString(3, veterinario.getNombre());
-            ps.setString(4, veterinario.getDireccion());
-            ps.setString(5, veterinario.getTelefono());
-            ps.setString(6, veterinario.getEmail());
+            ps.setString(1, veterinario.getNif());
+            ps.setString(2, veterinario.getNombre());
+            ps.setString(3, veterinario.getDireccion());
+            ps.setString(4, veterinario.getTelefono());
+            ps.setString(5, veterinario.getEmail());
 
-            return ps.executeUpdate();
+            int affected = ps.executeUpdate();
+            try (ResultSet keys = ps.getGeneratedKeys()) {
+                if (keys.next()) {
+                    int genId = keys.getInt(1);
+                    veterinario.setId(genId);
+                    return genId;
+                }
+            }
+            return affected;
         }
     }
 
